@@ -1,4 +1,4 @@
-name: Deploy Angular App to GitHub Pages
+name: Deploy Typing-Test to GitHub Pages
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,5 +31,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: gh-pages
-          folder: dist/typing-test
+          branch: prod-page
+          folder: dist/typing-test/browser
