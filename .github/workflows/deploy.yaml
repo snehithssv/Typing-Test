@@ -14,22 +14,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: ⬇️ Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: 🧰 Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: npm install
 
-      - name: Build Angular app
-        run: npx ng build --base-href=/typing-test/
+      - name: 🛠️ Build Angular app
+        run: npx ng build --configuration production --base-href=/typing-test/
 
-      - name: Deploy to GitHub Pages
+      - name: 🚀 Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: prod-page
           folder: dist/typing-test/browser
+          clean: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Deploy Typing-Test to GitHub Pages 🚀"
