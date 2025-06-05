@@ -1,0 +1,11 @@
+<div class="d-flex flex-column justify-content-center align-items-center">
+  <input
+    autofocus
+    (appTrackCapsDirective)="isCapsLockOn = $event"
+    (input)="this.typingEvent.emit($event); isTypingStarted=true"
+    (keyup)="this.typingEvent.emit($event)"
+    class="input-area"
+  />
+  <div *ngIf="isCapsLockOn">Caps Lock On</div>
+  <div *ngIf="isTypingStarted">Enter to End.</div>
+</div>

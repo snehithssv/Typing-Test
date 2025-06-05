@@ -1,0 +1,15 @@
+<p class="d-flex flex-wrap justify-content-center align-items-center">
+    <span
+      *ngFor="let word of getWordsArray(text); let i = index"
+      [style.color]="getCurrentWordColor(i)"
+    >
+      <span *ngFor="let char of getCharArray(word); let j = index">
+        <span
+          [innerHTML]="char"
+          [style.text-decoration]="getCurrentCharStyle(i, j)"
+        ></span>
+      </span>
+      <span>&nbsp;</span>
+    </span>
+  </p>
+  

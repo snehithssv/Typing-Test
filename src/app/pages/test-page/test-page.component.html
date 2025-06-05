@@ -1,0 +1,17 @@
+<app-title />
+<div
+  class="container-fluid d-flex justify-content-center flex-column align-items-center p-5"
+>
+  <app-text-display
+    [text]="text"
+    [currentCharIndex]="currentCharIndex"
+    [currentWordIndex]="currentWordIndex"
+  />
+  <app-typing-stats
+    [wordCount]="wordCount"
+    [typingSpeed]="typingSpeed"
+    [timeElapsed]="timeElapsed"
+  />
+  <app-typing-field (typingEvent)="typing($event)" />
+  <app-typing-result [errors]="errors" [result]="result" />
+</div>
