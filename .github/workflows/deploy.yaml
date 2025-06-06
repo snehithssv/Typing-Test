@@ -30,18 +30,29 @@ jobs:
       - name: 🛠️ Build Angular app
         run: npx ng build --configuration production --base-href=/Typing-Test/
 
-      - name: 🚀 Deploy preserving prod-page history (skip README overwrite)
+      - name: 🚀 Deploy preserving prod-page history
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      
-          git clone --branch prod-page https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git prod-page
-      
-          cd prod-page
+
+          # Clone the prod-page branch into folder prod-page (create if doesn't exist)
+          if git ls-remote --exit-code --heads origin prod-page; then
+            git clone --branch prod-page https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git prod-page
+            cd prod-page
+            git checkout prod-page
+          else
+            git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git prod-page
+            cd prod-page
+            git checkout -b prod-page
+          fi
+
+          # Remove all files except README.md (preserve your manual README)
           find . -mindepth 1 ! -name 'README.md' -exec rm -rf {} +
-      
+
+          # Copy new build files to current directory
           cp -r ../dist/typing-test/browser/* .
-      
+
           git add --all
           git commit -m "Deploy Typing-Test to GitHub Pages 🚀" || echo "No changes to commit"
+
           git push origin prod-page
