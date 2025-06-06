@@ -30,38 +30,33 @@ jobs:
       - name: 🛠️ Build Angular app
         run: npx ng build --configuration production --base-href=/Typing-Test/
 
-      - name: 🚀 Deploy preserving prod-page history
+      - name: 🚀 Deploy to prod-page branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      
-          # Clone the entire repo (default branch)
-          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git prod-page
-          cd prod-page
-      
-          # Fetch remote branches
-          git fetch origin
-      
-          # Check if prod-page branch exists remotely
-          if git show-ref --verify --quiet refs/remotes/origin/prod-page; then
-            # Checkout prod-page branch locally tracking remote
+          # Clone repo into temp folder
+          git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${REPO}.git temp
+          cd temp
+
+          # Check if prod-page branch exists, checkout or create it
+          if git show-ref --verify --quiet refs/heads/prod-page; then
             git checkout prod-page
-            git reset --hard origin/prod-page
           else
-            # Create prod-page branch locally
             git checkout -b prod-page
           fi
-      
-          # Remove all files except README.md to keep your manual README
-          find . -mindepth 1 ! -name 'README.md' -exec rm -rf {} +
-      
-          # Copy new build files into current directory
+
+          # Remove all files except .git to clean old build
+          git rm -rf . >/dev/null 2>&1 || true
+
+          # Copy new build files into temp folder
           cp -r ../dist/typing-test/browser/* .
-      
-          git add --all
-          # Commit only if there are changes
-          git diff --cached --quiet || git commit -m "Deploy Typing-Test to GitHub Pages 🚀"
-      
-          # Push to prod-page branch
-          git push origin prod-page
-      
+
+          # Add all files
+          git add .
+
+          # Commit changes
+          git commit -m "Deploy Typing-Test to GitHub Pages 🚀" || echo "No changes to commit"
+
+          # Force push to prod-page branch
+          git push --force origin prod-page
