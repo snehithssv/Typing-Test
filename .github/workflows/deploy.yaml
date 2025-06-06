@@ -59,7 +59,9 @@ This branch contains the **production-ready build** of the Typing-Test app, depl
 - Keeps deployment history clean by using force pushes via automation.
 
 ---
+
 EOF
+
 
       - name: 🚀 Deploy manually to prod-page
         run: |
