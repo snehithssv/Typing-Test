@@ -72,6 +72,8 @@ EOF
           git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git fetch origin prod-page || true
           git checkout prod-page || git checkout -b prod-page
+          git rm -rf .
+          git clean -fd
           git add .
           git commit -m "Deploy Typing-Test to GitHub Pages 🚀" || echo "No changes to commit"
           git push --force origin prod-page
