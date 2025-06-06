@@ -23,7 +23,7 @@ jobs:
         run: npm ci
 
       - name: 🛠️ Build Angular app
-        run: npx ng build --configuration production --base-href=/typing-test/
+        run: npx ng build --configuration production
 
       - name: 📂 Verify build output
         run: ls -R dist/typing-test/browser
