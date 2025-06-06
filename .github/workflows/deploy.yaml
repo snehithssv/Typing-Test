@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -30,16 +30,14 @@ jobs:
       - name: 🛠️ Build Angular app
         run: npx ng build --configuration production --base-href=/Typing-Test/
 
-      - name: 📂 Verify build output
-        run: ls -R dist/typing-test/browser
-
-      - name: 🚀 Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: prod-page
-          folder: dist/typing-test/browser
-          clean: true
-          single-commit: true
-          force: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Deploy Typing-Test to GitHub Pages 🚀"
+      - name: 🚀 Deploy manually to prod-page
+        run: |
+          cd dist/typing-test/browser
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git checkout -b prod-page
+          git add .
+          git commit -m "Deploy Typing-Test to GitHub Pages 🚀"
+          git push --force origin prod-page
