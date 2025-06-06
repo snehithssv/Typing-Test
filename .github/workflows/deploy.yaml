@@ -35,28 +35,23 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
         run: |
-          # Clone repo into temp folder
           git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${REPO}.git temp
           cd temp
-
-          # Check if prod-page branch exists, checkout or create it
+      
           if git show-ref --verify --quiet refs/heads/prod-page; then
             git checkout prod-page
           else
             git checkout -b prod-page
           fi
-
-          # Remove all files except .git to clean old build
-          git rm -rf . >/dev/null 2>&1 || true
-
-          # Copy new build files into temp folder
+      
+          # Delete everything except .git folder
+          find . -mindepth 1 ! -regex '^./\.git\(/.*\)?' -delete
+      
+          # Copy built Angular files only
           cp -r ../dist/typing-test/browser/* .
-
-          # Add all files
+      
           git add .
-
-          # Commit changes
+      
           git commit -m "Deploy Typing-Test to GitHub Pages 🚀" || echo "No changes to commit"
-
-          # Force push to prod-page branch
+      
           git push --force origin prod-page
