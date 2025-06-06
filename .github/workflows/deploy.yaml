@@ -62,7 +62,6 @@ This branch contains the **production-ready build** of the Typing-Test app, depl
 
 EOF
 
-
       - name: 🚀 Deploy manually to prod-page
         run: |
           cd dist/typing-test/browser
