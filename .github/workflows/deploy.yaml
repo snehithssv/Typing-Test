@@ -35,5 +35,6 @@ jobs:
           folder: dist/typing-test/browser
           clean: true
           single-commit: true
+          force: true 
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "Deploy Typing-Test to GitHub Pages 🚀"
