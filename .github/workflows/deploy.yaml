@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
@@ -23,12 +20,12 @@ jobs:
           node-version: 18
 
       - name: 📦 Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: 🛠️ Build Angular app
         run: npx ng build --configuration production --base-href=/typing-test/
 
-      - name: 📂 Debug:List built files
+      - name: 📂 Verify build output
         run: ls -R dist/typing-test/browser
 
       - name: 🚀 Deploy to GitHub Pages
@@ -37,5 +34,6 @@ jobs:
           branch: prod-page
           folder: dist/typing-test/browser
           clean: true
+          single-commit: true
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "Deploy Typing-Test to GitHub Pages 🚀"
