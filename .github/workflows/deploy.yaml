@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pages: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -35,6 +39,6 @@ jobs:
           folder: dist/typing-test/browser
           clean: true
           single-commit: true
-          force: true 
+          force: true
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "Deploy Typing-Test to GitHub Pages 🚀"
