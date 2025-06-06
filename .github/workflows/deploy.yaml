@@ -34,18 +34,14 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Clone prod-page branch (if doesn't exist, clone default and checkout prod-page)
-          git clone --branch prod-page https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git prod-page || \
-          git clone https://github.com/${{ github.repository }}.git prod-page && cd prod-page && git checkout prod-page
-
-          # Remove all files EXCEPT README.md to preserve your manual README
-          find prod-page -mindepth 1 ! -name 'README.md' -exec rm -rf {} +
-
-          # Copy new build files into prod-page folder
-          cp -r dist/typing-test/browser/* prod-page/
-
+      
+          git clone --branch prod-page https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git prod-page
+      
           cd prod-page
+          find . -mindepth 1 ! -name 'README.md' -exec rm -rf {} +
+      
+          cp -r ../dist/typing-test/browser/* .
+      
           git add --all
           git commit -m "Deploy Typing-Test to GitHub Pages 🚀" || echo "No changes to commit"
           git push origin prod-page
