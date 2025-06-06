@@ -30,17 +30,46 @@ jobs:
       - name: 🛠️ Build Angular app
         run: npx ng build --configuration production --base-href=/Typing-Test/
 
-      - name: 🚀 Deploy manually to prod-page
+      - name: 🔖 Add README file to build output
         run: |
-          cd dist/typing-test/browser
-          git init
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          git fetch origin prod-page || true
-          git checkout prod-page || git checkout -b prod-page
-          git rm -rf .
-          git clean -fd
+          cat <<EOF > dist/typing-test/browser/README.md
+## Production Deployment Branch - \`prod-page\`
+
+# This branch contains the **production-ready build** of the Typing-Test app, deployed to GitHub Pages.
+
+---
+
+## ⚠️ Important Notes
+
+- **Do NOT create pull requests to or from this branch.**  
+  This branch is automatically updated by GitHub Actions workflows during deployment.
+
+- **Do NOT commit directly to this branch.**  
+  All changes should be made on the \`main\` branch (or other development branches), then deployed via the workflow.
+
+- This branch is **managed automatically** by the deployment process and should be considered **read-only** for contributors.
+
+---
+
+## Purpose
+
+- Hosts the built Angular app for GitHub Pages at:  
+  \`https://<your-github-username>.github.io/Typing-Test/\`
+
+- Keeps deployment history clean by using force pushes via automation.
+
+---
+EOF
+
+      - name: 🚀 Deploy to prod-page branch
+        run: |
+          git clone --branch prod-page https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-page || \
+            git clone https://github.com/${{ github.repository }} prod-page
+          cd prod-page
+          git rm -rf . || true
+          git clean -fdx
+          cp -r ../dist/typing-test/browser/* .
+          cp -r ../dist/typing-test/browser/.* . || true
           git add .
           git commit -m "Deploy Typing-Test to GitHub Pages 🚀" || echo "No changes to commit"
           git push --force origin prod-page
