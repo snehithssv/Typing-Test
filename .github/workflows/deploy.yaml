@@ -32,10 +32,10 @@ jobs:
 
       - name: 📝 Add custom README to deploy folder
         run: |
-          cat <<EOF > dist/typing-test/browser/README.md
-# Production Deployment Branch - \`prod-page\`
+          cat <<'EOF' > dist/typing-test/browser/README.md
+## Production Deployment Branch - \`prod-page\` 
 
-This branch contains the **production-ready build** of the Typing-Test app, deployed to GitHub Pages.
+#This branch contains the **production-ready build** of the Typing-Test app, deployed to GitHub Pages.
 
 ---
 
