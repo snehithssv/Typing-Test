@@ -30,46 +30,22 @@ jobs:
       - name: 🛠️ Build Angular app
         run: npx ng build --configuration production --base-href=/Typing-Test/
 
-      - name: 📝 Add custom README to deploy folder
+      - name: 🚀 Deploy preserving prod-page history (skip README overwrite)
         run: |
-          cat <<'EOF' > dist/typing-test/browser/README.md
-## Production Deployment Branch - \`prod-page\` 
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-#This branch contains the **production-ready build** of the Typing-Test app, deployed to GitHub Pages.
+          # Clone prod-page branch (if doesn't exist, clone default and checkout prod-page)
+          git clone --branch prod-page https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git prod-page || \
+          git clone https://github.com/${{ github.repository }}.git prod-page && cd prod-page && git checkout prod-page
 
----
+          # Remove all files EXCEPT README.md to preserve your manual README
+          find prod-page -mindepth 1 ! -name 'README.md' -exec rm -rf {} +
 
-## ⚠️ Important Notes
+          # Copy new build files into prod-page folder
+          cp -r dist/typing-test/browser/* prod-page/
 
-- **Do NOT create pull requests to or from this branch.**  
-  This branch is automatically updated by GitHub Actions workflows during deployment.
-
-- **Do NOT commit directly to this branch.**  
-  All changes should be made on the \`main\` branch (or other development branches), then deployed via the workflow.
-
-- This branch is **managed automatically** by the deployment process and should be considered **read-only** for contributors.
-
----
-
-## Purpose
-
-- Hosts the built Angular app for GitHub Pages at:  
-  \`https://<your-github-username>.github.io/Typing-Test/\`
-
-- Keeps deployment history clean by using force pushes via automation.
-
----
-
-EOF
-
-      - name: 🚀 Deploy manually to prod-page
-        run: |
-          cd dist/typing-test/browser
-          git init
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          git checkout -b prod-page
-          git add .
-          git commit -m "Deploy Typing-Test to GitHub Pages 🚀"
-          git push --force origin prod-page
+          cd prod-page
+          git add --all
+          git commit -m "Deploy Typing-Test to GitHub Pages 🚀" || echo "No changes to commit"
+          git push origin prod-page
