@@ -30,15 +30,14 @@ jobs:
       - name: 🛠️ Build Angular app
         run: npx ng build --configuration production --base-href=/Typing-Test/
 
-      - name: 🚀 Deploy to prod-page branch
+      - name: 🚀 Deploy manually to prod-page
         run: |
-          git clone --branch prod-page https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} prod-page || \
-            git clone https://github.com/${{ github.repository }} prod-page
-          cd prod-page
-          git rm -rf . || true
-          git clean -fdx
-          cp -r ../dist/typing-test/browser/* .
-          cp -r ../dist/typing-test/browser/.* . || true
+          cd dist/typing-test/browser
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git checkout -b prod-page
           git add .
-          git commit -m "Deploy Typing-Test to GitHub Pages 🚀" || echo "No changes to commit"
+          git commit -m "Deploy Typing-Test to GitHub Pages 🚀"
           git push --force origin prod-page
