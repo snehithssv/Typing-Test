@@ -28,6 +28,9 @@ jobs:
       - name: 🛠️ Build Angular app
         run: npx ng build --configuration production --base-href=/typing-test/
 
+      - name: 📂 Debug:List built files
+        run: ls -R dist/typing-test/browser
+
       - name: 🚀 Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
